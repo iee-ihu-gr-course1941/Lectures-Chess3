@@ -24,7 +24,6 @@ function set_user($b,$input) {
 	
 	if(!isset($input['username'])) {
 		header("HTTP/1.1 400 Bad Request");
-		print_r($input);
 		print json_encode(['errormesg'=>"No username given."]);
 		exit;
 	}
@@ -61,7 +60,7 @@ function handle_user($method, $b,$input) {
 	if($method=='GET') {
 		show_user($b);
 	} else if($method=='PUT') {
-        set_user($b,$input['username']);
+        set_user($b,$input);
     }
 
 	
