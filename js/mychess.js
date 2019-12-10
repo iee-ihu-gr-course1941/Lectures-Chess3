@@ -1,3 +1,6 @@
+var me={};
+var game_status={};
+
 $(function () {
 	draw_empty_board();
 	fill_board();
@@ -51,13 +54,40 @@ function login_to_game() {
 			contentType: 'application/json',
 			data: JSON.stringify( {username: $('#username').val(), piece_color: p_color}),
 			success: login_result,
-			fail: login_error});
+			error: login_error});
 }
 
 function login_result(data) {
-	var x = data;
+	me = data[0];
+	$('#game_initializer').hide();
+	update_info();
+	game_start();
 }
 
-function login_error(data) {
-	var x = data;
+function login_error(data,y,z,c) {
+	var x = data.responseJSON;
+	alert(x.errormesg);
+	
+}
+
+function game_start() {
+	$.ajax({url: "chess.php/status/", success: update_status });
+}
+
+function update_status(data) {
+	game_status=data[0];
+	update_info();
+	if(game_status.p_turn==me.piece_color) {
+		x=0;
+		// do play
+	} else {
+		// must wait for something
+		setTimeout(function() { game_start();}, 4000);
+	}
+ 	
+}
+
+function update_info(){
+	$('#game_info').html("I am Player: "+me.piece_color+", my name is "+me.username +'<br>Game state: '+game_status.status+', '+ game_status.p_turn+' must play now.');
+	
 }
