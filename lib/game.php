@@ -3,6 +3,9 @@
 function show_status() {
 	
 	global $mysqli;
+	
+	check_abort();
+	
 	$sql = 'select * from game_status';
 	$st = $mysqli->prepare($sql);
 
@@ -12,6 +15,14 @@ function show_status() {
 	header('Content-type: application/json');
 	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
 
+}
+
+function check_abort() {
+	global $mysqli;
+	
+	$sql = "update game_status set status='aborded', result=if(p_turn='W','B','W'),p_turn=null where p_turn is not null and last_change<(now()-INTERVAL 5 MINUTE) and status='started'";
+	$st = $mysqli->prepare($sql);
+	$r = $st->execute();
 }
 
 
@@ -59,11 +70,7 @@ function update_game_status() {
 				}
 				break;
 	}
-	
-	
-	
-	
-	
+
 	$sql = 'update game_status set status=?, p_turn=?';
 	$st = $mysqli->prepare($sql);
 	$st->bind_param('ss',$new_status,$new_turn);
