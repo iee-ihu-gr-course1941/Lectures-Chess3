@@ -1,6 +1,8 @@
 $(function () {
 	draw_empty_board();
 	fill_board();
+	
+	$('#chess_login').click( login_to_game);
 });
 
 
@@ -33,3 +35,20 @@ function fill_board_by_data(data) {
 		
 	}
 }
+
+function login_to_game() {
+	if($('#username').val()=='') {
+		alert('You have to set a username');
+		return;
+	}
+	var p_color = $('#p_color').val();
+	$.ajax({url: "chess.php/players/"+p_color, 
+			method: 'PUT',
+			data: {username: $('#username').val(), piece_color: p_color},
+			success: login_result });
+}
+
+function login_result(data) {
+	
+}
+
