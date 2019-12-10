@@ -3,6 +3,8 @@ $(function () {
 	fill_board();
 	
 	$('#chess_login').click( login_to_game);
+	$('#chess_reset').click( reset_board);
+		
 });
 
 
@@ -22,9 +24,10 @@ function draw_empty_board() {
 
 function fill_board() {
 	$.ajax({url: "chess.php/board/", success: fill_board_by_data });
-	
 }
-
+function reset_board() {
+	$.ajax({url: "chess.php/board/", method: 'POST',  success: fill_board_by_data });
+}
 function fill_board_by_data(data) {
 	for(var i=0;i<data.length;i++) {
 		var o = data[i];
@@ -41,14 +44,20 @@ function login_to_game() {
 		alert('You have to set a username');
 		return;
 	}
-	var p_color = $('#p_color').val();
+	var p_color = $('#pcolor').val();
 	$.ajax({url: "chess.php/players/"+p_color, 
 			method: 'PUT',
-			data: {username: $('#username').val(), piece_color: p_color},
-			success: login_result });
+			dataType: "json",
+			contentType: 'application/json',
+			data: JSON.stringify( {username: $('#username').val(), piece_color: p_color}),
+			success: login_result,
+			fail: login_error});
 }
 
 function login_result(data) {
-	
+	var x = data;
 }
 
+function login_error(data) {
+	var x = data;
+}
