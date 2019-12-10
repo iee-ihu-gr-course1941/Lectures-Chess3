@@ -58,12 +58,12 @@ CREATE TABLE `game_status` (
   `status` enum('not active','initialized','started','ended','aborded') NOT NULL DEFAULT 'not active',
   `p_turn` enum('W','B') DEFAULT NULL,
   `result` enum('B','W','D') DEFAULT NULL,
-  `last_change` timestamp NULL DEFAULT NULL
+  `last_change` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `game_status` */
 
-insert  into `game_status`(`status`,`p_turn`,`result`,`last_change`) values ('not active',NULL,NULL,NULL);
+insert  into `game_status`(`status`,`p_turn`,`result`,`last_change`) values ('started','W',NULL,'2019-12-11 00:18:00');
 
 /*Table structure for table `players` */
 
@@ -73,12 +73,13 @@ CREATE TABLE `players` (
   `username` varchar(20) DEFAULT NULL,
   `piece_color` enum('B','W') NOT NULL,
   `token` varchar(32) DEFAULT NULL,
+  `last_action` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`piece_color`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `players` */
 
-insert  into `players`(`username`,`piece_color`,`token`) values (NULL,'B',NULL),('ni','W','a002dbc1a1198a4a1fc20490412afa8e');
+insert  into `players`(`username`,`piece_color`,`token`,`last_action`) values ('bbbbbb','B','3739a531704cb26e4fd0ad1f4ee28c27','2019-12-11 00:18:00'),('www','W','8efd6f154181c2117a0558b57a4afb84','2019-12-11 00:17:53');
 
 /* Trigger structure for table `game_status` */
 
@@ -102,9 +103,8 @@ DELIMITER $$
 /*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `clean_board`()
 BEGIN
 	replace into board select * from board_empty;
-	
 	update `players` set username=null, token=null;
-	
+	update `game_status` set `status`='not active', `p_turn`=null, `result`=null;
     END */$$
 DELIMITER ;
 
