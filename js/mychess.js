@@ -104,7 +104,7 @@ function update_status(data) {
 }
 
 function update_info(){
-	$('#game_info').html("I am Player: "+me.piece_color+", my name is "+me.username +'<br>Game state: '+game_status.status+', '+ game_status.p_turn+' must play now.');
+	$('#game_info').html("I am Player: "+me.piece_color+", my name is "+me.username +'<br>Token='+me.token+'<br>Game state: '+game_status.status+', '+ game_status.p_turn+' must play now.');
 	
 }
 
